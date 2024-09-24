@@ -130,8 +130,20 @@ class Category:
         """
         return self.get_category(self._anime_categorys, tmdb_info)
 
-    @staticmethod
-    def get_category(categorys, tmdb_info):
+    def extract_value(self, key, data):
+        if data is None:
+            return None
+        if key.find(".") != -1:
+            subKey = key[: key.find(".")]
+            if isinstance(data[subKey], list):
+                return [
+                    self.extract_value(key[key.find(".") + 1 :], val)
+                    for val in data[subKey]
+                ]
+            return self.extract_value(key[key.find(".") + 1 :], data[subKey])
+        return data[key]
+
+    def get_category(self, categorys, tmdb_info):
         """
         根据 TMDB信息与分类配置文件进行比较，确定所属分类
         :param categorys: 分类配置
@@ -151,7 +163,7 @@ class Category:
             for attr, value in item.items():
                 if not value:
                     continue
-                info_value = tmdb_info.get(attr)
+                info_value = self.extract_value(attr, tmdb_info)
                 if not info_value:
                     match_flag = False
                     continue
