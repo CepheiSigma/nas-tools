@@ -336,6 +336,7 @@ class Sync(object):
                 continue
             mon_path = sync_path_conf.get("from")
             try:
+                continue
                 log.info(f"开始 {mon_path} 的监控服务")
                 if sync_path_conf.get("compatibility"):
                     # 兼容模式，目录同步性能降低且NAS不能休眠，但可以兼容挂载的远程共享目录如SMB
